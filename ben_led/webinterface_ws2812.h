@@ -2,10 +2,6 @@
 #include <ESP8266WebServer.h>
 #include <WS2812FX.h>
 
-#include "index.html.h"
-#include "main.js.h"
-
-
 
 // QUICKFIX...See https://github.com/esp8266/Arduino/issues/263
 #define min(a,b) ((a)<(b)?(a):(b))
@@ -16,17 +12,17 @@
 
 #define DEFAULT_COLOR 0xFF0000
 #define DEFAULT_BRIGHTNESS 150
-#define DEFAULT_SPEED 150
+#define DEFAULT_SPEED 2000
 #define DEFAULT_MODE FX_MODE_LARSON_SCANNER
 //Effects for the 4 Events
 #define EVENT1 FX_MODE_COLOR_WIPE_RANDOM
-#define EVENTSPEED1 255
+#define EVENTSPEED1 1000
 #define EVENT2 FX_MODE_STROBE_RAINBOW
-#define EVENTSPEED2 255
-#define EVENT3 FX_MODE_POLICE_THREE
-#define EVENTSPEED3 150
-#define EVENT4 FX_MODE_POLICE_FOUR
-#define EVENTSPEED4 150
+#define EVENTSPEED2 1000
+#define EVENT3 FX_MODE_STROBE
+#define EVENTSPEED3 1000
+#define EVENT4 FX_MODE_STROBE
+#define EVENTSPEED4 1000
 #define event_time 600 // Duration of Event
 
 
@@ -56,7 +52,7 @@ void modes_setup() {
   #  Webserver Functions
   ##################################################### */
 
-
+/*
 
 void srv_handle_modes() {
   server.send(200, "text/plain", modes);
@@ -101,7 +97,7 @@ void srv_handle_set() {
   }
   server.send(200, "text/plain", "OK");
 }
-
+*/
 void event_event_start() {
   if (event == 1) {
     Serial.println("Event 1");

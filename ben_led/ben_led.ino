@@ -1,10 +1,8 @@
 #include <ESP8266WiFi.h>
-#include <ESP8266WebServer.h>
 #include <WS2812FX.h>
 #include <EEPROM.h>
 #include <Adafruit_NeoPixel.h>
 #include <PubSubClient.h>
-//TEST
 
 #define LED_COUNT 60
 #define LED_PIN 3   // 0 = GPIO0, 2=GPIO2
@@ -28,7 +26,6 @@ IPAddress gateway2(192, 168, 178, 1);
 
 IPAddress subnet(255, 255, 255, 0);
 #endif
-ESP8266WebServer server(80);
 WiFiClient espClient;
 PubSubClient client(espClient);
 Adafruit_NeoPixel strip_temp = Adafruit_NeoPixel(LED_COUNT, LED_PIN, NEO_GRB + NEO_KHZ800);
@@ -172,7 +169,7 @@ void setup() {
   EEPROM.begin(512);
   strip_temp.begin();
   digitalWrite(S_LED, HIGH);
-  http_server_handler();
+  //http_server_handler();
   modes_setup();
   str_modes_setup();
   eeprom_read();
@@ -186,7 +183,6 @@ void setup() {
     wifi_setup();
     port.begin(localPort);
     ledstrip.init(LED_COUNT);
-    server.begin();
   } else {
     Serial.println("Starting WebEffects Setup");
     web_setup();
@@ -233,7 +229,6 @@ void loop() {
     }
     web_loop();
   }
-  server.handleClient();
 }
 
 
@@ -245,7 +240,7 @@ void callback(String topic, byte* message, unsigned int length) {
   Serial.print(topic);
   Serial.print(". Message: ");
   String messageTemp;
-  String modeTemp = "FX_MODE_";
+  String modeTemp;
   int mode_temp;
 
   for (int i = 0; i < length; i++) {
@@ -258,10 +253,9 @@ void callback(String topic, byte* message, unsigned int length) {
 
   // If a message is received on the topic room/lamp, you check if the message is either on or off. Turns the lamp GPIO according to the message
   if (topic == "/led_leiste/mode/set") {
-    //mode_temp = messageTemp.toInt();
     mode_temp = get_modenum(messageTemp);
     if (e_mode == 200 && e_mode != mode_temp && mode_temp <= ws2812fx.getModeCount()) {
-      client.publish("/led_leiste/mode", ws2812fx.getModeName(mode_temp), true);
+      client.publish("/led_leiste/mode", String(ws2812fx.getModeName(mode_temp)).c_str(), true);
       e_mode = mode_temp;
       eeprom_change(mode_temp);
     } else if ( e_mode != 200 && mode_temp == 200) {
@@ -269,7 +263,7 @@ void callback(String topic, byte* message, unsigned int length) {
       e_mode = mode_temp;
       eeprom_change(mode_temp);
     } else if ( e_mode != 200 && e_mode != mode_temp && mode_temp <= ws2812fx.getModeCount()) {
-      client.publish("/led_leiste/mode",  ws2812fx.getModeName(mode_temp), true);
+      client.publish("/led_leiste/mode",  String(ws2812fx.getModeName(mode_temp)).c_str(), true);
       e_mode = mode_temp;
       M_CHANGE(mode_temp);
     } else {
@@ -305,7 +299,7 @@ void callback(String topic, byte* message, unsigned int length) {
     }
   } else if (topic == "/led_leiste/speed/set") {
     mode_temp = messageTemp.toInt();
-    if (mode_temp >= 0 && mode_temp <= 255) {
+    if (mode_temp >= 10 && mode_temp <= 65535) {
       ws2812fx.setSpeed(mode_temp);
       client.publish("/led_leiste/speed", String(mode_temp).c_str(), true);
       Serial.println("MQTT Speed changed");

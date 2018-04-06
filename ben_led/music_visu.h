@@ -62,7 +62,7 @@ int music_visu_setup() {
   Serial.println(WiFi.localIP());
   port.begin(localPort);
   ledstrip.init(LED_COUNT);
-  server.begin();
+  //server.begin();
   return (0);
 }
 

@@ -1,3 +1,4 @@
+/*
 void srv_handle_not_found() {
   server.send(404, "text/plain", "File Not Found");
 }
@@ -92,6 +93,7 @@ void event_f(int foll_temp) {
   }
   server.send(200, "text/plain", "Event!");
 }
+*/
 
 void M_CHANGE(int c_mode) {
   if (e_mode == 200) {
@@ -103,11 +105,11 @@ void M_CHANGE(int c_mode) {
   e_mode = c_mode;
 
   client.publish("/led_leiste/get_mode", String(ws2812fx.getModeName(e_mode)).c_str(), true);
-  server.send(200, "text/plain", ws2812fx.getModeName(e_mode));
+  //server.send(200, "text/plain", ws2812fx.getModeName(e_mode));
   Serial.println("New Mode: ");
   Serial.print(e_mode);
 }
-
+/*
 void http_server_handler() {
   Serial.println("HTTP server setup");
   server.on("/", srv_handle_index_html);
@@ -321,123 +323,19 @@ void http_server_handler() {
   server.begin();
   Serial.println("HTTP server started.");
 }
+*/
 
 int get_modenum(String str_mode) {
-  if (str_mode == "Static") {
-    return (0);
-  } else if (str_mode == "Blink") {
-    return (1);
-  } else if (str_mode == "Breath") {
-    return (2);
-  } else if (str_mode == "Color Wipe") {
-    return (3);
-  } else if (str_mode == "Color Wipe Random") {
-    return (4);
-  } else if (str_mode == "Random Color") {
-    return (5);
-  } else if (str_mode == "Single Dynamic") {
-    return (6);
-  } else if (str_mode == "Multi Dynamic") {
-    return (7);
-  } else if (str_mode == "Rainbow") {
-    return (8);
-  } else if (str_mode == "Rainbow Cycle") {
-    return (9);
-  } else if (str_mode == "Scan") {
-    return (10);
-  } else if (str_mode == "Dual Scan") {
-    return (11);
-  } else if (str_mode == "Fade") {
-    return (12);
-  } else if (str_mode == "Theater Chase") {
-    return (13);
-  } else if (str_mode == "Theater Chase Rainbow") {
-    return (14);
-  } else if (str_mode == "Running Lights") {
-    return (15);
-  } else if (str_mode == "Twinkle") {
-    return (16);
-  } else if (str_mode == "Twinkle Random") {
-    return (17);
-  } else if  (str_mode == "Twinkle Fade") {
-    return (18);
-  } else if (str_mode == "Twinkle Fade Random") {
-    return (19);
-  } else if (str_mode == "Sparkle") {
-    return (20);
-  } else if (str_mode == "Flash Sparkle") {
-    return (21);
-  } else if (str_mode == "Hyper Sparkle") {
-    return (22);
-  } else if (str_mode == "Strobe") {
-    return (23);
-  } else if (str_mode == "Strobe Rainbow") {
-    return (24);
-  } else if (str_mode == "Multi Strobe") {
-    return (25);
-  } else if (str_mode == "Blink Rainbow") {
-    return (26);
-  } else if (str_mode == "Chase White") {
-    return (27);
-  } else if (str_mode == "Chase Color") {
-    return (28);
-  } else if (str_mode == "Chase Random") {
-    return (29);
-  } else if (str_mode == "Chase Rainbow") {
-    return (30);
-  } else if (str_mode == "Chase Flash") {
-    return (31);
-  } else if (str_mode == "Chase Flash Random") {
-    return (32);
-  } else if (str_mode == "Chase Rainbow White") {
-    return (33);
-  } else if (str_mode == "Chase Blackout") {
-    return (34);
-  } else if (str_mode == "Chase Blackout Rainbow") {
-    return (35);
-  } else if (str_mode == "Color Sweep Random") {
-    return (36);
-  } else if (str_mode == "Running Color") {
-    return (37);
-  } else if (str_mode == "Running Red Blue") {
-    return (38);
-  } else if (str_mode == "Running Random") {
-    return (39);
-  } else if (str_mode == "Larson Scanner") {
-    return (40);
-  } else if (str_mode == "Comet") {
-    return (41);
-  } else if (str_mode == "Fireworks") {
-    return (42);
-  } else if (str_mode == "Fireworks Random") {
-    return (43);
-  } else if (str_mode == "Merry Christmas") {
-    return (44);
-  } else if (str_mode == "Fire Flicker") {
-    return (45);
-  } else if (str_mode == "Fire Flicker (soft)") {
-    return (46);
-  } else if (str_mode == "Dual Color Wipe In to Out") {
-    return (47);
-  } else if (str_mode == "Dual Color Wipe In to In") {
-    return (48);
-  } else if (str_mode == "Dual Color Wipe Out to Out") {
-    return (49);
-  } else if (str_mode == "Dual Color Wipe Out to In") {
-    return (50);
-  } else if (str_mode == "Police Normal") {
-    return (51);
-  } else if (str_mode == "Police 2 Bars") {
-    return (52);
-  } else if (str_mode == "Police 3 Blue 3 Red and one white Bar") {
-    return (53);
-  } else if (str_mode == "Police 2 Bars Strobe 3 Holt") {
-    return (54);
-  } else if (str_mode == "Music Visu") {
-    return (200);
-  } else {
-    Serial.println("Get Modenum out of Reach");
-    return (0);
+  for ( int i = 0; i <= ws2812fx.getModeCount() + 2; i++) {
+    if (str_mode == ws2812fx.getModeName(i) ) {
+      return i;
+    } else if (str_mode == "Music Visu") {
+      return (200);
+    }
+    if (i >= ws2812fx.getModeCount()) {
+      Serial.println("End of Modes reached!!");
+      return 0;
+    }
   }
 }
 
